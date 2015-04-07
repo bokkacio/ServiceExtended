@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_serviceextended" default="compile.module.serviceextended">
+  <dirname property="module.serviceextended.basedir" file="${ant.file.module_serviceextended}"/>
+  
+  <property name="module.jdk.home.serviceextended" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.serviceextended" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.serviceextended" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.serviceextended" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="serviceextended.output.dir" value="${module.serviceextended.basedir}/out/production/ServiceExtended"/>
+  <property name="serviceextended.testoutput.dir" value="${module.serviceextended.basedir}/out/test/ServiceExtended"/>
+  
+  <path id="serviceextended.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="serviceextended.module.production.classpath">
+    <path refid="${module.jdk.classpath.serviceextended}"/>
+    <path refid="library.eventbus-2.4.0.classpath"/>
+  </path>
+  
+  <path id="serviceextended.runtime.production.module.classpath">
+    <pathelement location="${serviceextended.output.dir}"/>
+    <path refid="library.eventbus-2.4.0.classpath"/>
+  </path>
+  
+  <path id="serviceextended.module.classpath">
+    <path refid="${module.jdk.classpath.serviceextended}"/>
+    <pathelement location="${serviceextended.output.dir}"/>
+    <path refid="library.eventbus-2.4.0.classpath"/>
+  </path>
+  
+  <path id="serviceextended.runtime.module.classpath">
+    <pathelement location="${serviceextended.testoutput.dir}"/>
+    <pathelement location="${serviceextended.output.dir}"/>
+    <path refid="library.eventbus-2.4.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.serviceextended">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.serviceextended">
+    <patternset refid="excluded.from.module.serviceextended"/>
+  </patternset>
+  
+  <path id="serviceextended.module.sourcepath">
+    <dirset dir="${module.serviceextended.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.serviceextended" depends="compile.module.serviceextended.production,compile.module.serviceextended.tests" description="Compile module ServiceExtended"/>
+  
+  <target name="compile.module.serviceextended.production" depends="register.custom.compilers" description="Compile module ServiceExtended; production classes">
+    <mkdir dir="${serviceextended.output.dir}"/>
+    <javac2 destdir="${serviceextended.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.serviceextended}/javac">
+      <compilerarg line="${compiler.args.serviceextended}"/>
+      <bootclasspath refid="serviceextended.module.bootclasspath"/>
+      <classpath refid="serviceextended.module.production.classpath"/>
+      <src refid="serviceextended.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.serviceextended"/>
+    </javac2>
+    
+    <copy todir="${serviceextended.output.dir}">
+      <fileset dir="${module.serviceextended.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.serviceextended.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.serviceextended.tests" depends="register.custom.compilers,compile.module.serviceextended.production" description="compile module ServiceExtended; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.serviceextended" description="cleanup module">
+    <delete dir="${serviceextended.output.dir}"/>
+    <delete dir="${serviceextended.testoutput.dir}"/>
+  </target>
+</project>
